@@ -18,21 +18,26 @@ class Cache:
         if key in self.cache:
             node = self.cache[key]
             self.order.remove(node)  # Remove from the linked list
+            if self.cache[key].callback:
+                self.cache[key].callback(self.cache[key].args)
             del self.cache[key]  # Remove from the dictionary
             self.size -= 1
             
-    def store(self, key: str, value: any) -> None:
+    def store(self, key: str, value: any, *args, **kwargs) -> None:
         """Store a key-value pair in the cache."""
         if key in self.cache:
             # Update the value and move it to the most recent position
             node = self.cache[key]
             node.value = value
+            node.args = args
+            if kwargs.get("callback", None):
+                node.callback = kwargs["callback"]
             self.order.move_to_end(node)
         else:
             # Add new key-value pair
             if self.size == self.limit:
                 self.cleanup(0.1)  # Run cleanup if cache is full
-            node = self.order.add(key, value)
+            node = self.order.add(key, value, args, kwargs)
             self.cache[key] = node
             self.size += 1
     
@@ -44,13 +49,17 @@ class Cache:
             self.order.remove_oldest()
             self.size -= 1
             # Remove from the hash map as well
+            if self.cache[self.order.head.key].callback:
+                self.cache[self.order.head.key].callback(self.cache[self.order.head.key].args)
             del self.cache[self.order.head.key]
 
 
 class Node:
-    def __init__(self, key: str, value: int) -> None:
+    def __init__(self, key: str, value: int, args: tuple = (), callback: any = None) -> None:
         self.key: str = key  # The key for this node
         self.value: int = value  # The value for this node
+        self.args: tuple = args
+        self.callback: function = callback
         self.prev: Node | None = None  # Pointer to the previous node in the list
         self.next: Node | None = None  # Pointer to the next node in the list
 
@@ -60,9 +69,9 @@ class DoublyLinkedList:
         self.head: Node | None = None  # The head (oldest) node of the list
         self.tail: Node | None = None  # The tail (most recent) node of the list
     
-    def add(self, key: str, value: int) -> Node:
+    def add(self, key: str, value: int, args, kwargs) -> Node:
         """Add a new node with the given key and value to the end of the list."""
-        new_node: Node = Node(key, value)
+        new_node: Node = Node(key, value, args, kwargs.get("callback", None))
         if not self.head:
             self.head = self.tail = new_node
         else:

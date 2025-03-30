@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "encache"
-version = "0.1.0"
+version = "0.1.1"
 description = "A small and easy caching system for every use"
 authors = [{name = "Emanuel Odén Hesselroth", email = "emanuelodenhesselroth@gmail.com"}]
 license = {text = "MIT"}
