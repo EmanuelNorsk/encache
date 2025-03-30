@@ -19,7 +19,17 @@ class Cache:
             node = self.cache[key]
             self.order.remove(node)  # Remove from the linked list
             if self.cache[key].callback:
-                self.cache[key].callback(self.cache[key].args)
+                self.cache[key].callback(*self.cache[key].args)
+            del self.cache[key]  # Remove from the dictionary
+            self.size -= 1
+
+    def remove(self, key: str) -> None:
+        """Remove a specific key from the cache if it exists."""
+        if key in self.cache:
+            node = self.cache[key]
+            self.order.remove(node)  # Remove from the linked list
+            if self.cache[key].callback:
+                self.cache[key].callback(*self.cache[key].args)
             del self.cache[key]  # Remove from the dictionary
             self.size -= 1
             

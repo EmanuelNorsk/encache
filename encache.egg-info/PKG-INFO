@@ -1,6 +1,6 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: encache
-Version: 0.1.0
+Version: 0.1.1
 Summary: A small and easy caching system for every use
 Home-page: https://github.com/EmanuelNorsk/encache
 Author: Emanuel Odén Hesselroth
@@ -13,3 +13,4 @@ Requires-Python: >=3.6
 License-File: LICENSE
 Dynamic: author
 Dynamic: home-page
+Dynamic: license-file
